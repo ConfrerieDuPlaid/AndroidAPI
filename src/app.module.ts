@@ -6,6 +6,8 @@ import * as dotenv from 'dotenv';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
+import { LikelistModule } from './likelist/likelist.module';
+import { WishlistModule } from './wishlist/wishlist.module';
 
 dotenv.config();
 
@@ -25,6 +27,8 @@ dotenv.config();
       },
     }),
     UserModule,
+    LikelistModule,
+    WishlistModule,
   ],
   controllers: [AppController],
   providers: [AppService],

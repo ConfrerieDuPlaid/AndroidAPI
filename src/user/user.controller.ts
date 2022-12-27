@@ -14,7 +14,6 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
-import { UserAdapter } from './adapter/user.adapter';
 import { UserResponse } from './entities/user.response';
 
 @Controller('user')
@@ -27,7 +26,7 @@ export class UserController {
   @HttpCode(201)
   async create(@Body() createUserDto: CreateUserDto): Promise<UserResponse> {
     const userCreated = await this.userService.create(createUserDto);
-    return UserAdapter.toUserResponse(userCreated);
+    return new UserResponse(userCreated);
   }
 
   @Post('/login')
@@ -35,13 +34,13 @@ export class UserController {
     @Body() getUserDto: GetUserDto,
   ): Promise<UserResponse> {
     const userFound = await this.userService.findByEmailAndPassword(getUserDto);
-    return UserAdapter.toUserResponse(userFound);
+    return new UserResponse(userFound);
   }
 
   @Get()
   async findAll(): Promise<UserResponse[]> {
     const users = await this.userService.findAll();
-    return users.map((user) => UserAdapter.toUserResponse(user));
+    return users.map((user) => new UserResponse(user));
   }
 
   @Get(':id')

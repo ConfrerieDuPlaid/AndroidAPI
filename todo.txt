@@ -1,0 +1,15 @@
+[] Faire passer les requêtes game à Steam par notre API en filtrant uniquement les infos intéressantes ?
+    id (appid)
+    nom (name)
+    prix (package_groups.subs[0-1].price_in_cents_with_discounts)
+    éditeur (publishers[])
+    bannière (background)
+    image
+    description (detailed_description)
+    commentaires
+        user
+        commentaire
+        note
+    => pas de repository, juste un call API vers steam et un response adapter
+[] Stocker les likes (steamId + userId uniquement)
+[] Stocker les wish (idem)
