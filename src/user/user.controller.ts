@@ -49,9 +49,18 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return await this.userService.update(id, updateUserDto);
+  @Patch('/recPwd/:email')
+  async findByEmail(@Param('email') email: string): Promise<{ token: string }> {
+    const resetPasswordToken = await this.userService.generateResetToken(email);
+    return { token: resetPasswordToken };
+  }
+
+  @Patch(':token')
+  async update(
+    @Param('token') token: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.userService.update(token, updateUserDto);
   }
 
   @Delete(':id')

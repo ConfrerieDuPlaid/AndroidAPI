@@ -5,7 +5,8 @@ import { GetUserDto } from './dto/get-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IdUtils } from '../shared/utils/id.utils';
+import { RandomGenerator } from 'typeorm/util/RandomGenerator';
+import { generateRandomToken } from '../shared/utils/token.utils';
 
 @Injectable()
 export class UserService {
@@ -34,14 +35,26 @@ export class UserService {
     });
   }
 
+  async generateResetToken(email: string): Promise<string> {
+    const resetToken = generateRandomToken();
+    await this.userRepository.update(
+      { email: email },
+      { token: resetToken.toString() },
+    );
+    return resetToken.toString();
+  }
+
   findOne(id: string) {
     return `This action returns a #${id} user`;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<number> {
+  async update(token: string, updateUserDto: UpdateUserDto): Promise<number> {
     const updateResult = await this.userRepository.update(
-      { _id: IdUtils.objectIdFromString(id) },
-      updateUserDto,
+      { token: token },
+      {
+        password: updateUserDto.password,
+        token: null,
+      },
     );
     return updateResult.affected.valueOf();
   }
