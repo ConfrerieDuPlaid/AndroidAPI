@@ -11,6 +11,7 @@ import { WishlistModule } from './wishlist/wishlist.module';
 import { GameModule } from './game/game.module';
 import { Wish } from './wishlist/entities/wish.entity';
 import { Like } from './likelist/entities/like.entity';
+import { CommentModule } from './comment/comment.module';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ dotenv.config();
     LikelistModule,
     WishlistModule,
     GameModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

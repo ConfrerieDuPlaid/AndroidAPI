@@ -6,10 +6,9 @@ import { Game } from './entities/game.entity';
 
 @Injectable()
 export class GameService {
-  private steamBaseAPIURL = 'https://store.steampowered.com/api/';
   private top100SteamURL =
     'https://api.steampowered.com/ISteamChartsService/GetMostPlayedGames/v1/';
-  private gameEndpoint = 'appdetails';
+  private gameEndpoint = 'https://store.steampowered.com/api/appdetails';
 
   create(createGameDto: CreateGameDto) {
     return 'This action adds a new game';
@@ -17,8 +16,7 @@ export class GameService {
 
   async findTop100(): Promise<any> {
     let results = await HttpUtils.get(this.top100SteamURL);
-    console.log(results.response.ranks);
-    results = results.response.ranks.map((gameRank) => {
+    results = results['response']['ranks'].map((gameRank) => {
       return {
         rank: gameRank.rank,
         appid: gameRank.appid,
@@ -32,9 +30,7 @@ export class GameService {
   }
 
   async findOneFromSteam(id: number): Promise<Game> {
-    const result = await HttpUtils.get(
-      this.steamBaseAPIURL + this.gameEndpoint + `?appids=${id}`,
-    );
+    const result = await HttpUtils.get(this.gameEndpoint + `?appids=${id}`);
     const gameData = result[`${id}`]['data'];
     if (!gameData) return null;
     console.log(gameData['steam_appid']);
