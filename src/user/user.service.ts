@@ -5,7 +5,6 @@ import { GetUserDto } from './dto/get-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RandomGenerator } from 'typeorm/util/RandomGenerator';
 import { generateRandomToken } from '../shared/utils/token.utils';
 
 @Injectable()

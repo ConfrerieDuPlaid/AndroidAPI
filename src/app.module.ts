@@ -8,6 +8,9 @@ import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { LikelistModule } from './likelist/likelist.module';
 import { WishlistModule } from './wishlist/wishlist.module';
+import { GameModule } from './game/game.module';
+import { Wish } from './wishlist/entities/wish.entity';
+import { Like } from './likelist/entities/like.entity';
 
 dotenv.config();
 
@@ -22,13 +25,14 @@ dotenv.config();
           useNewUrlParser: true,
           synchronize: true,
           logging: true,
-          entities: [User],
+          entities: [User, Wish, Like],
         };
       },
     }),
     UserModule,
     LikelistModule,
     WishlistModule,
+    GameModule,
   ],
   controllers: [AppController],
   providers: [AppService],
