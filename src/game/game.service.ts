@@ -10,6 +10,8 @@ export class GameService {
     'https://api.steampowered.com/ISteamChartsService/GetMostPlayedGames/v1/';
   private gameEndpoint = 'https://store.steampowered.com/api/appdetails';
 
+  private gamesCache: Map<string, Game> = new Map<string, Game>();
+
   create(createGameDto: CreateGameDto) {
     return 'This action adds a new game';
   }
@@ -30,11 +32,17 @@ export class GameService {
     return results;
   }
 
-  async findOne(internalId: string) {
-    return `This method returns the #${internalId} game`;
+  async findOne(id: string): Promise<Game> {
+    if (this.gamesCache.has(id.toString())) {
+      return this.gamesCache.get(id.toString());
+    } else {
+      const game = await this.findOneFromSteam(id);
+      this.gamesCache.set(id.toString(), game);
+      return game;
+    }
   }
 
-  async findOneFromSteam(id: number): Promise<Game> {
+  async findOneFromSteam(id: string): Promise<Game> {
     const result = await HttpUtils.get(this.gameEndpoint + `?appids=${id}`);
     const gameData = result[`${id}`]['data'];
     if (!gameData) return null;
@@ -63,7 +71,7 @@ export class GameService {
   async getGamesFromSource(sources: any): Promise<Map<string, Game>> {
     const games: Map<string, Game> = new Map<string, Game>();
     for (const src of sources) {
-      const game = await this.findOneFromSteam(src.appid);
+      const game = await this.findOne(src.appid);
       games.set(src.appid, game);
     }
     return games;
@@ -75,5 +83,9 @@ export class GameService {
 
   remove(id: number) {
     return `This action removes a #${id} game`;
+  }
+
+  clearCache() {
+    this.gamesCache.clear();
   }
 }

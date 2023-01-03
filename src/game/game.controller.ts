@@ -27,20 +27,19 @@ export class GameController {
     return await this.gameService.findTop100();
   }
 
-  @Get('/:id')
-  @HttpCode(416)
+  @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.gameService.findOne(id);
-  }
-
-  @Get('/steam/:id')
-  async findOneFromSteam(@Param('id') id: string) {
-    return await this.gameService.findOneFromSteam(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateGameDto: UpdateGameDto) {
     return this.gameService.update(+id, updateGameDto);
+  }
+
+  @Delete('/clearCache')
+  clearCache() {
+    return this.gameService.clearCache();
   }
 
   @Delete(':id')
