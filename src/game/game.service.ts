@@ -16,10 +16,17 @@ export class GameService {
 
   async findTop100(): Promise<any> {
     let results = await HttpUtils.get(this.top100SteamURL);
+    const games: Map<string, Game> = new Map<string, Game>();
+    for (const gameRank of results['response']['ranks']) {
+      const game = await this.findOneFromSteam(gameRank.appid);
+      games.set(gameRank.appid, game);
+    }
+
     results = results['response']['ranks'].map((gameRank) => {
       return {
         rank: gameRank.rank,
         appid: gameRank.appid,
+        gameData: games.get(gameRank.appid),
       };
     });
     return results;
