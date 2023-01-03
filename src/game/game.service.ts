@@ -16,11 +16,9 @@ export class GameService {
 
   async findTop100(): Promise<any> {
     let results = await HttpUtils.get(this.top100SteamURL);
-    const games: Map<string, Game> = new Map<string, Game>();
-    for (const gameRank of results['response']['ranks']) {
-      const game = await this.findOneFromSteam(gameRank.appid);
-      games.set(gameRank.appid, game);
-    }
+    const games: Map<string, Game> = await this.getGamesFromSource(
+      results['response']['ranks'],
+    );
 
     results = results['response']['ranks'].map((gameRank) => {
       return {
@@ -40,7 +38,6 @@ export class GameService {
     const result = await HttpUtils.get(this.gameEndpoint + `?appids=${id}`);
     const gameData = result[`${id}`]['data'];
     if (!gameData) return null;
-    console.log(gameData['steam_appid']);
     const game: Game = new Game();
     game.steamAppid = gameData['steam_appid'];
     game.name = gameData['name'];
@@ -61,6 +58,15 @@ export class GameService {
       });
     });
     return max;
+  }
+
+  async getGamesFromSource(sources: any): Promise<Map<string, Game>> {
+    const games: Map<string, Game> = new Map<string, Game>();
+    for (const src of sources) {
+      const game = await this.findOneFromSteam(src.appid);
+      games.set(src.appid, game);
+    }
+    return games;
   }
 
   update(id: number, updateGameDto: UpdateGameDto) {

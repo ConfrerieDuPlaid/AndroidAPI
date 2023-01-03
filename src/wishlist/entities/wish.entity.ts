@@ -8,6 +8,6 @@ export class Wish extends BaseEntity {
   @Column()
   appid: string;
 
-  @Column() F;
+  @Column()
   user: ObjectID;
 }

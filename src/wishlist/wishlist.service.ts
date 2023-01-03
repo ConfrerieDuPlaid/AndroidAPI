@@ -5,11 +5,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Wish } from './entities/wish.entity';
 import { Repository } from 'typeorm';
 import { IdUtils } from '../shared/utils/id.utils';
+import { GameService } from '../game/game.service';
+import { Gamelist } from '../shared/gamelist.entity';
 
 @Injectable()
 export class WishlistService {
   @InjectRepository(Wish)
   private readonly wishlistRepository: Repository<Wish>;
+
+  constructor(private readonly gameService: GameService) {}
 
   async create(createWishlistDto: CreateWishlistDto): Promise<Wish> {
     const wish: Wish = new Wish();
@@ -23,9 +27,20 @@ export class WishlistService {
     return await this.wishlistRepository.save(wish);
   }
 
-  async findAll(userId: string): Promise<Wish[]> {
-    return await this.wishlistRepository.findBy({
+  async findAll(userId: string): Promise<Gamelist[]> {
+    const wishes = await this.wishlistRepository.findBy({
       user: IdUtils.objectIdFromString(userId),
+    });
+
+    const games = await this.gameService.getGamesFromSource(wishes);
+
+    return wishes.map((wish) => {
+      const gamelist = new Gamelist();
+      gamelist._id = wish._id.toString();
+      gamelist.appid = wish.appid;
+      gamelist.user = wish.user.toString();
+      gamelist.gameData = games.get(wish.appid);
+      return gamelist;
     });
   }
 
