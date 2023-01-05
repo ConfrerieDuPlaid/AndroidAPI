@@ -54,6 +54,9 @@ export class GameService {
     game.headerImage = gameData['header_image'];
     game.backgroundImage = gameData['background'];
     game.priceInCents = this.getMaxGamePrice(gameData['package_groups']);
+    game.screenshots = gameData['screenshots'].map((screenshot) => {
+      return screenshot['path_thumbnail'];
+    });
     return game;
   }
 

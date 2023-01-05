@@ -12,4 +12,6 @@ export class Game {
   description: string;
 
   priceInCents: number;
+
+  screenshots: string[];
 }
