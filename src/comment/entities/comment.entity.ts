@@ -3,5 +3,5 @@ export class Comment {
 
   content: string;
 
-  voteScore: number;
+  score: number;
 }

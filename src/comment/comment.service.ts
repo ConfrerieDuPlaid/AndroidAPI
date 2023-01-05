@@ -28,7 +28,7 @@ export class CommentService {
     return results['reviews'].map((commentData) => {
       const comment: Comment = new Comment();
       comment.author = usernames.get(commentData['author']['steamid']);
-      comment.voteScore = commentData['weighted_vote_score'];
+      comment.score = commentData['weighted_vote_score'];
       comment.content = commentData['review'];
       return comment;
     });
