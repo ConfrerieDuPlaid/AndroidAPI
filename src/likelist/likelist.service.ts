@@ -22,7 +22,8 @@ export class LikelistService {
     return await this.likelistRepository.save(like);
   }
 
-  async findAll(userId: string): Promise<Gamelist[]> {
+  async findAll(userId: string, simplified: boolean): Promise<Gamelist[]> {
+    console.log(simplified);
     const likes = await this.likelistRepository.findBy({
       user: IdUtils.objectIdFromString(userId),
     });
@@ -34,7 +35,7 @@ export class LikelistService {
       gamelist._id = like._id.toString();
       gamelist.appid = like.appid;
       gamelist.user = like.user.toString();
-      gamelist.gameData = games.get(like.appid);
+      if (!simplified) gamelist.gameData = games.get(like.appid);
       return gamelist;
     });
   }

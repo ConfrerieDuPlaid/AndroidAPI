@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
@@ -22,8 +23,8 @@ export class WishlistController {
   }
 
   @Get(':userid')
-  findAll(@Param('userid') userid: string) {
-    return this.wishlistService.findAll(userid);
+  findAll(@Param('userid') userid: string, @Query() query) {
+    return this.wishlistService.findAll(userid, +query.simplified == 1);
   }
 
   @Get(':id')

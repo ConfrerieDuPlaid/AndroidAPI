@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { LikelistService } from './likelist.service';
 import { CreateLikelistDto } from './dto/create-likelist.dto';
@@ -22,8 +23,8 @@ export class LikelistController {
   }
 
   @Get(':userid')
-  findAll(@Param('userid') userid: string) {
-    return this.likelistService.findAll(userid);
+  findAll(@Param('userid') userid: string, @Query() query) {
+    return this.likelistService.findAll(userid, +query.simplified == 1);
   }
 
   @Get(':id')

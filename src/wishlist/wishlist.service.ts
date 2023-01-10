@@ -27,7 +27,7 @@ export class WishlistService {
     return await this.wishlistRepository.save(wish);
   }
 
-  async findAll(userId: string): Promise<Gamelist[]> {
+  async findAll(userId: string, simplified: boolean): Promise<Gamelist[]> {
     const wishes = await this.wishlistRepository.findBy({
       user: IdUtils.objectIdFromString(userId),
     });
@@ -39,7 +39,7 @@ export class WishlistService {
       gamelist._id = wish._id.toString();
       gamelist.appid = wish.appid;
       gamelist.user = wish.user.toString();
-      gamelist.gameData = games.get(wish.appid);
+      if (!simplified) gamelist.gameData = games.get(wish.appid);
       return gamelist;
     });
   }
