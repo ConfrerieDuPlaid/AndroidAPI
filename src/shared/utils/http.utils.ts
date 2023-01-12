@@ -2,7 +2,6 @@ import fetch from 'node-fetch';
 
 export class HttpUtils {
   static async get(url: string): Promise<any> {
-    // console.log(`URL : ${url}`);
     const response = await fetch(url, {
       method: 'GET',
       headers: {

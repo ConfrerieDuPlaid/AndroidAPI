@@ -19,11 +19,15 @@ export class LikelistService {
     const like: Like = new Like();
     like.user = IdUtils.objectIdFromString(createLikelistDto.user);
     like.appid = createLikelistDto.appid;
+    const existingLike = await this.likelistRepository.findOneBy({
+      user: like.user,
+      appid: like.appid,
+    });
+    if (existingLike) return existingLike;
     return await this.likelistRepository.save(like);
   }
 
   async findAll(userId: string, simplified: boolean): Promise<Gamelist[]> {
-    console.log(simplified);
     const likes = await this.likelistRepository.findBy({
       user: IdUtils.objectIdFromString(userId),
     });
