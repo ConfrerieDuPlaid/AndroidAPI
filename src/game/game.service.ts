@@ -53,22 +53,16 @@ export class GameService {
     game.description = gameData['detailed_description'];
     game.headerImage = gameData['header_image'];
     game.backgroundImage = gameData['background'];
-    game.priceInCents = this.getMinGamePrice(gameData['package_groups']);
+    game.priceInCents = this.getMinGamePrice(gameData);
     game.screenshots = gameData['screenshots'].map((screenshot) => {
       return screenshot['path_thumbnail'];
     });
     return game;
   }
 
-  private getMinGamePrice(gamePackages: any): number {
-    let min = Infinity;
-    gamePackages.forEach((packageGroup) => {
-      packageGroup.subs.forEach((pack) => {
-        if (pack['price_in_cents_with_discount'] < min)
-          min = pack['price_in_cents_with_discount'];
-      });
-    });
-    return min;
+  private getMinGamePrice(gameData: any): number {
+    if (!gameData['price_overview']) return 0.0;
+    return gameData['price_overview']['final'];
   }
 
   async getGamesFromSource(sources: any): Promise<Map<string, Game>> {
