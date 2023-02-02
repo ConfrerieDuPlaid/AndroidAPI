@@ -9,6 +9,7 @@ export class GameService {
   private top100SteamURL =
     'https://api.steampowered.com/ISteamChartsService/GetMostPlayedGames/v1/';
   private gameEndpoint = 'https://store.steampowered.com/api/appdetails';
+  private gameSearchEndpoint = 'https://steamcommunity.com/actions/SearchApps';
 
   private gamesCache: Map<string, Game> = new Map<string, Game>();
 
@@ -58,6 +59,19 @@ export class GameService {
       return screenshot['path_thumbnail'];
     });
     return game;
+  }
+
+  async findByName(name: string): Promise<any> {
+    let results = await HttpUtils.get(`${this.gameSearchEndpoint}/${name}`);
+    const games: Map<string, Game> = await this.getGamesFromSource(results);
+
+    results = results.map((res) => {
+      return {
+        appid: res.appid,
+        gameData: games.get(res.appid),
+      };
+    });
+    return results;
   }
 
   private getMinGamePrice(gameData: any): number {

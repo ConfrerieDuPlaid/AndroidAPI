@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { GameService } from './game.service';
 import { CreateGameDto } from './dto/create-game.dto';
@@ -30,6 +31,14 @@ export class GameController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.gameService.findOne(id);
+  }
+
+  @Get('')
+  async findByName(@Query() query) {
+    if (query.name != '') {
+      const games = await this.gameService.findByName(query.name);
+      return games;
+    }
   }
 
   @Patch(':id')
