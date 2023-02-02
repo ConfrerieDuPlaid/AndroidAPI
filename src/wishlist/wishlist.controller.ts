@@ -19,6 +19,7 @@ export class WishlistController {
 
   @Post()
   async create(@Body() createWishlistDto: CreateWishlistDto) {
+    console.log(createWishlistDto);
     return await this.wishlistService.create(createWishlistDto);
   }
 

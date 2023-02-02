@@ -45,6 +45,7 @@ export class GameService {
 
   async findOneFromSteam(id: string): Promise<Game> {
     const result = await HttpUtils.get(this.gameEndpoint + `?appids=${id}`);
+    if(!result) return null;
     const gameData = result[`${id}`]['data'];
     if (!gameData) return null;
     const game: Game = new Game();

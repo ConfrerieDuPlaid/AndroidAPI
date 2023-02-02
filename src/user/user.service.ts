@@ -6,6 +6,8 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { generateRandomToken } from '../shared/utils/token.utils';
+import { NotFoundError } from 'rxjs';
+import { UserNotFoundException } from './user.not.found.exception';
 
 @Injectable()
 export class UserService {
@@ -36,11 +38,18 @@ export class UserService {
 
   async generateResetToken(email: string): Promise<string> {
     const resetToken = generateRandomToken();
-    await this.userRepository.update(
-      { email: email },
-      { token: resetToken.toString() },
-    );
-    return resetToken.toString();
+    const user = await this.userRepository.findOneBy({
+      email: email,
+    });
+    if (user) {
+      await this.userRepository.update(
+        { email: email },
+        { token: resetToken.toString() },
+      );
+      return resetToken.toString();
+    } else {
+      throw new UserNotFoundException(`user with email ${email} not found`);
+    }
   }
 
   findOne(id: string) {
@@ -48,14 +57,21 @@ export class UserService {
   }
 
   async update(token: string, updateUserDto: UpdateUserDto): Promise<number> {
-    const updateResult = await this.userRepository.update(
-      { token: token },
-      {
-        password: updateUserDto.password,
-        token: null,
-      },
-    );
-    return updateResult.affected.valueOf();
+    const user = await this.userRepository.findOneBy({
+      token: token,
+    });
+    if (user) {
+      const updateResult = await this.userRepository.update(
+        { token: token },
+        {
+          password: updateUserDto.password,
+          token: null,
+        },
+      );
+      return updateResult.affected.valueOf();
+    } else {
+      throw new UserNotFoundException(`User with token ${token} not found`);
+    }
   }
 
   remove(id: string) {

@@ -15,18 +15,20 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
 import { UserResponse } from './entities/user.response';
+import { User } from './entities/user.entity';
+import { UserExceptionFilter } from './user.filter';
 
 @Controller('user')
-@UseFilters()
+@UseFilters(new UserExceptionFilter())
 export class UserController {
   @Inject(UserService)
   private readonly userService: UserService;
 
   @Post()
   @HttpCode(201)
-  async create(@Body() createUserDto: CreateUserDto): Promise<UserResponse> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     const userCreated = await this.userService.create(createUserDto);
-    return new UserResponse(userCreated);
+    return userCreated;
   }
 
   @Post('/login')
@@ -60,7 +62,9 @@ export class UserController {
     @Param('token') token: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return await this.userService.update(token, updateUserDto);
+    const res = await this.userService.update(token, updateUserDto);
+    console.log(`${new Date()} res : ${res}`);
+    return res;
   }
 
   @Delete(':id')
