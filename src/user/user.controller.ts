@@ -26,9 +26,9 @@ export class UserController {
 
   @Post()
   @HttpCode(201)
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<UserResponse> {
     const userCreated = await this.userService.create(createUserDto);
-    return userCreated;
+    return new UserResponse(userCreated);
   }
 
   @Post('/login')
